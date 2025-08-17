@@ -19,7 +19,7 @@
 
   <ItemGroup>
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.2" IncludeAssets="compile" />
-	  <PackageReference Include="UnityEngine.Modules" Version="2022.3.10" IncludeAssets="compile" />
+	  <PackageReference Include="UnityEngine.Modules" Version="6000.0.*" IncludeAssets="compile" />
   </ItemGroup>
   
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
@@ -30,7 +30,13 @@
     <Folder Include="Build\" />
   </ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <PropertyGroup>
+    <DebugPluginDir>D:\SteamLibrary\steamapps\common\PEAK\BepInEx\plugins</DebugPluginDir>
+  </PropertyGroup>
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(DebugPluginDir)&quot; &#xD;&#xA;" />
+    <Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).pdb&quot; &quot;$(DebugPluginDir)&quot; &#xD;&#xA;" />
 		<Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(ProjDir)Build&quot; &#xD;&#xA;" />
 	</Target>
 	

@@ -1,0 +1,94 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<TargetFramework>net48</TargetFramework>
+    <AssemblyName>UCustomPrefabsAPI.Peak</AssemblyName>
+    <Description>UCustomPrefabs For PEAK</Description>
+    <Version>0.0.4</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+	 <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+	 <GameDataPath>D:\SteamLibrary\steamapps\common\PEAK\PEAK_Data</GameDataPath>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <RestoreSources>$(RestoreSources);https://api.nuget.org/v3/index.json;https://nuget.bepinex.dev/v3/index.json</RestoreSources>
+  </PropertyGroup>
+	
+  <PropertyGroup>
+	<ReferencePath>$(ReferencePath);$(GameDataPath)\Managed</ReferencePath>
+	<ReferencePath>$(ReferencePath);$(GameDataPath)\Plugins</ReferencePath>
+	<ReferencePath>$(ReferencePath);$(GameDataPath)\..\BepinEx\plugins</ReferencePath>
+	<RootNamespace>UCustomPrefabsAPI.Peak</RootNamespace>
+  </PropertyGroup>
+	
+  <ItemGroup>
+    <EmbeddedResource Include="custompassporticons" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all" />
+	  <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
+	  <PackageReference Include="BepInEx.Core" Version="5.4.*" IncludeAssets="compile" />
+	  <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" IncludeAssets="compile" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" IncludeAssets="compile" />
+	  <PackageReference Include="UnityEngine.Modules" Version="6000.0.*" IncludeAssets="compile" />
+    <PackageReference Include="HarmonyX" Version="2.9.0" IncludeAssets="compile" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp" Publicize="true">
+      <HintPath>$(GameDataPath)\Managed\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DOTween">
+      <HintPath>$(GameDataPath)\Managed\DOTween.dll</HintPath>
+    </Reference>
+	  <Reference Include="com.rlabrecque.steamworks.net">
+		  <HintPath>$(GameDataPath)\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Zorro.Core.Runtime">
+		  <HintPath>$(GameDataPath)\Managed\Zorro.Core.Runtime.dll</HintPath>
+	  </Reference>
+	<Reference Include="PhotonUnityNetworking">
+		<HintPath>$(GameDataPath)\Managed\PhotonUnityNetworking.dll</HintPath>
+	</Reference>
+	<Reference Include="PhotonRealtime">
+		<HintPath>$(GameDataPath)\Managed\PhotonRealtime.dll</HintPath>
+	</Reference>
+	<Reference Include="Photon3Unity3D">
+		<HintPath>$(GameDataPath)\Managed\Photon3Unity3D.dll</HintPath>
+	</Reference>
+	  <Reference Include="Unity.TextMeshPro">
+		  <HintPath>$(GameDataPath)\Managed\Unity.TextMeshPro.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.UI">
+		  <HintPath>$(GameDataPath)\Managed\UnityEngine.UI.dll</HintPath>
+	  </Reference>
+  </ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+	</ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Build\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Naelstrof.JigglePhysics\Naelstrof.JigglePhysics.csproj" Publicize="true" />
+    <ProjectReference Include="..\PixelTools\PixelTools.csproj" />
+    <ProjectReference Include="..\UCustomPrefabsAPI\UCustomPrefabsAPI.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <DebugPluginDir>D:\SteamLibrary\steamapps\common\PEAK\BepInEx\plugins</DebugPluginDir>
+  </PropertyGroup>
+  
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(DebugPluginDir)&quot; &#xD;&#xA;" />
+    <Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).pdb&quot; &quot;$(DebugPluginDir)&quot; &#xD;&#xA;" />
+	  <Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(ProjDir)Build&quot; &#xD;&#xA;" />
+  </Target>
+	
+</Project>

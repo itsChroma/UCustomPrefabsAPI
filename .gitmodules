@@ -1,0 +1,3 @@
+[submodule "Naelstrof.JigglePhysics/external"]
+	path = Naelstrof.JigglePhysics/external
+	url = https://github.com/naelstrof/UnityJigglePhysics.git

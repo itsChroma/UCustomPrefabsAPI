@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UCustomPrefabsAPI.Extras.AssetBundles;
 using UCustomPrefabsAPI.Extras.CustomActions;
 using UnityEngine;
 namespace UCustomPrefabsAPI
@@ -78,6 +79,30 @@ namespace UCustomPrefabsAPI
             TemplateData template = new TemplateData(uid);
             template.InstantiatePrefab(prefab);
             TemplateDatas.Add(uid, template);
+        }
+        private static Queue<string> _LateRegistry = new();
+        /// <summary>
+        /// (Used for prefabs that require alittle more time to bake...) Registers a Template from a prefab.
+        /// Maybe use this for async bulk loading? TODO
+        /// </summary>
+        public static void LateRegister(string uid, string assetbundle,string prefabPath)
+        {
+            _LateRegistry.Enqueue(uid);
+            _LateRegistry.Enqueue(assetbundle);
+            _LateRegistry.Enqueue(prefabPath);
+        }
+        public static void CommitLateRegistry()
+        {
+            while (_LateRegistry.Count > 0)
+            {
+                var uid = _LateRegistry.Dequeue();
+                var assetbundle = _LateRegistry.Dequeue();
+                var prefabPath = _LateRegistry.Dequeue();
+                var templatePrefab = AssetBundleRegistry.LoadPrefab(assetbundle, prefabPath);
+                if (templatePrefab == null)
+                    continue;
+                Register(uid, templatePrefab);
+            }
         }
         /// <summary>
         /// Registers a Empty Template.

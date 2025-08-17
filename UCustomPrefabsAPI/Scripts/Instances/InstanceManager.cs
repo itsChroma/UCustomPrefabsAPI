@@ -37,7 +37,7 @@ namespace UCustomPrefabsAPI
         {
             if (target == null) return new InstanceInfo[0];
 
-            var handlers = target.gameObject.GetComponentsInChildren<UCustomPrefabHandler>();
+            var handlers = target.gameObject.GetComponentsInChildren<UCustomPrefabHandler>(true);
             var instances = new InstanceInfo[handlers.Length];
             for (int i = 0; i < handlers.Length; i++)
                 instances[i] = handlers[i]?.Instance;

@@ -43,7 +43,7 @@ namespace UCustomPrefabsAPI
                 {
                     AddCustomActionsTemplate(customActions);
                 }
-                foreach (var template in Container.GetComponentsInChildren<PrefabTemplate>())
+                foreach (var template in Container.GetComponentsInChildren<PrefabTemplate>(true))
                 {
                     AddTemplate(template);
                 }

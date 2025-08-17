@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using UCustomPrefabsAPI.Extras.AssetBundles;
 using UnityEngine;
 namespace UCustomPrefabsAPI.Extras.Utility
@@ -11,6 +12,7 @@ namespace UCustomPrefabsAPI.Extras.Utility
         /// </summary>
         public static Transform RecursivelyFindChild(Transform parent, string name)
         {
+            Debug.Log($"RecursivelyFindChild {parent.name}:{name}");
             foreach (Transform child in parent)
             {
                 if (child.name == name)
@@ -26,11 +28,14 @@ namespace UCustomPrefabsAPI.Extras.Utility
         /// </summary>
         public static Transform IterativelyFindChild(Transform parent, string name)
         {
+            Debug.Log($"IterativelyFindChild {parent.name}:{name}");
             var searchQueue = new Queue<Transform>();
             searchQueue.Enqueue(parent);
             while (searchQueue.Count != 0)
             {
-                foreach (Transform child in parent)
+                //??? How did I miss this? This will loop forever.
+                var target = searchQueue.Dequeue();
+                foreach (Transform child in target)
                 {
                     if (child.name == name)
                         return child;
@@ -44,6 +49,7 @@ namespace UCustomPrefabsAPI.Extras.Utility
         /// </summary>
         public static void RecursivelyCollectChildNames(Transform target, ref Dictionary<string, Transform> looseNameRefs)
         {
+            Debug.Log($"RecursivelyCollectChildNames {target.name}");
             if (looseNameRefs == null)
                 looseNameRefs = new Dictionary<string, Transform>();
             foreach (Transform child in target)
@@ -59,6 +65,7 @@ namespace UCustomPrefabsAPI.Extras.Utility
         /// </summary>
         public static void IterativelyCollectChildNames(Transform target, ref Dictionary<string, Transform> looseNameRefs)
         {
+            Debug.Log($"IterativelyCollectChildNames {target.name}");
             if (looseNameRefs == null)
                 looseNameRefs = new Dictionary<string, Transform>();
             var searchQueue = new Queue<Transform>();
@@ -187,6 +194,7 @@ namespace UCustomPrefabsAPI.Extras.Utility
         /// </summary>
         public static Transform FindParent(Transform origin, string name)
         {
+            Debug.Log($"FindParent {origin}:{name}");
             bool found = false;
             var target = origin;
             while (!found && target != null)

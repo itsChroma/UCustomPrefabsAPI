@@ -108,7 +108,7 @@ namespace UCustomPrefabsAPI
     /*Templates*/
     public partial class UCustomPrefabHandler : MonoBehaviour
     {
-        private Dictionary<string, Dictionary<string, PrefabTemplate>> Templates = new();
+        public Dictionary<string, Dictionary<string, PrefabTemplate>> Templates = new();
         /// <summary>
         /// Internal : Registers Templates from Instance Information.
         /// </summary>

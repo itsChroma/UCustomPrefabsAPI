@@ -8,7 +8,7 @@ namespace UCustomPrefabsAPI
 {
     public static class UCustomPrefabFileHelper
     {
-        public static List<string> FindDirectoriesWithFileName(string path,string fileName)
+        public static List<string> FindDirectoriesWithFileName(string path, string fileName)
         {
             List<string> results = new List<string>();
             Queue<string> workingDirectories = new Queue<string>();
@@ -79,9 +79,10 @@ namespace UCustomPrefabsAPI
                             AssetBundleRegistry.Remove(name, true);
                         }
                         else
-                            Debug.Log($"Unable to Register AssetBundle : {assetbundlePath}");
+                            Debug.Log($"Registering AssetBundle : {assetbundlePath}");
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Debug.Log($"Unable To Access Path : {path}");
                 Debug.LogError(e);
@@ -104,10 +105,13 @@ namespace UCustomPrefabsAPI
             }
             for (int i = 0; i < data.Template_Names.Count; i++)
             {
+                TemplateRegistry.LateRegister(data.Template_Names[i], assetBundleName, data.Template_Prefabs[i]);
+                /*Old Method TODO move to own function.
                 var templatePrefab = AssetBundleRegistry.LoadPrefab(assetBundleName, data.Template_Prefabs[i]);
                 if (templatePrefab == null)
                     continue;
                 TemplateRegistry.Register(data.Template_Names[i], templatePrefab);
+                */
             }
             return true;
         }

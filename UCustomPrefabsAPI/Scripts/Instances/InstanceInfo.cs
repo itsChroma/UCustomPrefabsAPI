@@ -7,7 +7,7 @@ namespace UCustomPrefabsAPI
         public string ID { get; private set; } = string.Empty;
         public Transform Target { get; private set; } = null;
         public string TemplateUID { get; private set; } = string.Empty;
-        //TODO find more appropiate naming convention
+        //TODO find more appropriate naming convention
         public UCustomPrefabHandler Handler { get; private set; } = null;
         public InstanceInfo(string id, string template_uid)
         {
