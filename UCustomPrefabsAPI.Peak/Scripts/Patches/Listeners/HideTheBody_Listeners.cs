@@ -14,7 +14,8 @@ namespace UCustomPrefabsAPI.Peak.Patches.Listeners
 #if DEBUG
             Debug.Log("Toggle_Postfix_Patch");
 #endif
-            Toggle_Postfix.Invoke(__instance.character, __instance);
+            if (__instance)
+                Toggle_Postfix.Invoke(__instance.character, __instance);
         }
     }
 }
