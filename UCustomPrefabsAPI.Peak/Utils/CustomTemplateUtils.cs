@@ -111,5 +111,16 @@ namespace UCustomPrefabsAPI.Peak.Utils
                 }
             return templateID;
         }
+        public static PeakTemplateType GetHandlerType(UCustomPrefabHandler handler)
+        {
+            var templateID = handler.Instance.TemplateUID;
+            if (!TemplateRegistry.TryGetTemplate(templateID, out var template))
+                return PeakTemplateType.Character;
+            var customActionTemplate = template.CustomActionsTemplates.FirstOrDefault(cat => cat is Peak_Custom_Template);
+            if (!customActionTemplate)
+                return PeakTemplateType.Character;
+            var customTemplate = (Peak_Custom_Template)customActionTemplate;
+            return customTemplate.TemplateType;
+        }
     }
 }

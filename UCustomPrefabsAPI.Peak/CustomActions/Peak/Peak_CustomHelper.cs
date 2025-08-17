@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UCustomPrefabsAPI.Peak.Utils;
 using UnityEngine;
 namespace UCustomPrefabsAPI.Peak.CustomActions
 {
@@ -67,13 +68,27 @@ namespace UCustomPrefabsAPI.Peak.CustomActions
         public void DoInit(string last, string state)
         {
             Reset_Modules();
-            if (CharacterDummy != null)
+            switch (CustomTemplateUtils.GetHandlerType(Handler))
             {
-                Do_Dummy_Init();
-            }
-            else
-            {
-                Do_Character_Init();
+                case PeakTemplateType.Character:
+                    {
+                        if (CharacterDummy != null)
+                        {
+                            Do_Dummy_Init();
+                        }
+                        else
+                        {
+                            Do_Character_Init();
+                        }
+                    }
+                    break;
+                    //TODO Maybe Make a Chicken_Init, with specific Modules <-- IE Peak_Human, Peak_Chicken
+                    //Instead of a bool check? I dunno. Could be worth looking into.
+                    //Also, Consider if it's worth spawning chicken template on Own Character...
+                case PeakTemplateType.Chicken:
+                    Do_Character_Init();
+                    break;
+                    //TODO Other Template Types?
             }
             Init_Modules();
         }

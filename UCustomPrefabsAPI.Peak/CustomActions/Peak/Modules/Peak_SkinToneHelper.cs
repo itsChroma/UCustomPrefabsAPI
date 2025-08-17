@@ -32,11 +32,15 @@ namespace UCustomPrefabsAPI.Peak
         }
         public void UpdateSkinTone(CharacterCustomization customization)
         {
+            //TODO setup a proper way to get our own skin-tone color... IE from customization?
+            try { 
             Color skinColor = customization.refs.mainRenderer.material.GetColor(CharacterCustomization.SkinColor);
             foreach (var helper in Registered_SkinToneHelpers)
             {
                 helper.Set_SkinTone(skinColor);
             }
+            }
+            catch { Debug.LogError("Couldn't Update SkinTone."); }
         }
     }
 }
