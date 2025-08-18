@@ -5,7 +5,8 @@ namespace UCustomPrefabsAPI.Peak
     [HarmonyPatch]
     internal static class PlayerPatch
     {
-        [HarmonyPatch(typeof(Character), "Start")]
+        //Maybe Switch over to using nameof() in all the patches...Just for consistency...!
+        [HarmonyPatch(typeof(Character), nameof(Character.Start))]
         [HarmonyPostfix]
         static void Start_Postfix_Patch(ref Character __instance)
         {

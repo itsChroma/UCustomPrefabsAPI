@@ -8,6 +8,7 @@ namespace UCustomPrefabsAPI.RuntimeExtras
 {
     public class Peak_SteamUtils
     {
+        //TODO Move functionality away from SteamAvatarHelper <-
         public static Dictionary<CSteamID, Texture2D> LoadedAvatars = new();
         public static void Fetch_SteamID(PhotonView view, Action<CSteamID> callback)
         {
@@ -98,7 +99,7 @@ namespace UCustomPrefabsAPI.RuntimeExtras
                 Debug.LogWarning($"Failed to GetImageSize {steamID}");
                 return null;
             }
-            byte[] image = new byte[4 * (int)width * (int)height];
+            byte[] image = new byte[4 * width * height];
             success = SteamUtils.GetImageRGBA(imageId, image, image.Length);
             if (!success)
             {
@@ -114,27 +115,23 @@ namespace UCustomPrefabsAPI.RuntimeExtras
         }
         private static void FlipImageHorizontally(ref byte[] image, uint width, uint height)
         {
-            //Working Values
-            byte r, g, b, a;
-            int ti, bi, topOffset, bottomOffset;
-            //
+            //TODO Check if there's a way to simplify this =
             int rowSize = (int)width * 4;
-            // In-place vertical flip using int temp vars (swap rows)
             int halfHeight = (int)height / 2;
             for (int y = 0; y < halfHeight; y++)
             {
-                topOffset = y * rowSize;
-                bottomOffset = ((int)height - 1 - y) * rowSize;
+                int topOffset = y * rowSize;
+                int bottomOffset = ((int)height - 1 - y) * rowSize;
                 for (int x = 0; x < rowSize; x += 4)
                 {
-                    ti = topOffset + x;
-                    bi = bottomOffset + x;
+                    var ti = topOffset + x;
+                    var bi = bottomOffset + x;
 
-                    // Swap 4 bytes (RGBA)
-                    r = image[ti];
-                    g = image[ti + 1];
-                    b = image[ti + 2];
-                    a = image[ti + 3];
+                    //Swap 4 Bytes (RGBA)//
+                    var r = image[ti];
+                    var g = image[ti + 1];
+                    var b = image[ti + 2];
+                    var a = image[ti + 3];
 
                     image[ti] = image[bi];
                     image[ti + 1] = image[bi + 1];
