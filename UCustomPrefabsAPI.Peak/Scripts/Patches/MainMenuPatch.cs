@@ -10,6 +10,7 @@ namespace UCustomPrefabsAPI.Peak
         static void Start_Postfix_Patch(ref MainMenu __instance)
         {
             //Just so we can clean up any stored textures//
+            InstanceManager.Verify();
             Peak_SteamUtils.Clear_Loaded_Avatars();
         }
     }

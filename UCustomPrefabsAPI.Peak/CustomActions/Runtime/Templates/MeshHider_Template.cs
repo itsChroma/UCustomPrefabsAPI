@@ -16,6 +16,15 @@ namespace UCustomPrefabsAPI.RuntimeExtras
             SearchUtilTokens//TODO Varify search util token find works.
         }
         [SerializeField][HideInInspector] public string HiderMethod_data;
+        public HiderMethod ParsedHiderMethod
+        {
+            get
+            {
+                if (!Enum.TryParse<HiderMethod>(HiderMethod_data, out var method))
+                    return default;
+                return method;
+            }
+        }
         [SerializeField] public List<string> MeshesHidden = new();
         [SerializeField] public bool AlwaysCheck = false;
 #if UNITY_EDITOR
@@ -27,10 +36,11 @@ namespace UCustomPrefabsAPI.RuntimeExtras
         }
         public override Type RegisterCustomActionsBaseType() => throw new NotImplementedException();
 #else
-        public override object[] PrepareTemplateData()
+        //TODO Check if better just to scan template for MeshHider Templates//
+        /*public override object[] PrepareTemplateData()
         {
             return [Enum.Parse(typeof(HiderMethod), HiderMethod_data), MeshesHidden, AlwaysCheck];
-        }
+        }*/
         public override Type RegisterCustomActionsBaseType() => typeof(MeshHider);
 #endif
     }

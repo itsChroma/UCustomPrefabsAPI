@@ -12,8 +12,9 @@ namespace UCustomPrefabsAPI.Peak
     {
         //Dirty Hack To Manage Reset Order
         //TODO move this to main Peak_PlayerHelper??? Just to handle future order issues//
-        public static Dictionary<Transform, Stack<Peak_Constraints>> Shared_Constraints = new();
-        public bool IsPrimaryConstraint = false;
+        //TODO 2 : Might just manually change the order of how things are loaded/unloaded see Player Config stuff?//
+        //public static Dictionary<Transform, Stack<Peak_Constraints>> Shared_Constraints = new();
+        //public bool IsPrimaryConstraint = false;
         public override void Init()
         {
             RebuildConstraints();
@@ -27,7 +28,7 @@ namespace UCustomPrefabsAPI.Peak
         public override void Reset()
         {
             //Dirty Hack To Manage Reset Order
-            if (IsPrimaryConstraint)
+            /*if (IsPrimaryConstraint)
             {
                 var target = instance.Handler.transform;
                 if (!Shared_Constraints.TryGetValue(target, out var sharedConstraints))
@@ -43,7 +44,8 @@ namespace UCustomPrefabsAPI.Peak
                 {
                     sharedConstraints.Pop()?.Reset_Constraints();
                 }
-            }
+            }*/
+            Reset_Constraints();
         }
         public override void Destroy()
         {
@@ -54,6 +56,19 @@ namespace UCustomPrefabsAPI.Peak
         private List<BakedConstraintTemplate> BakedConstraints = new();
         public void RebuildConstraints()
         {
+            var templateID = instance.Handler.Instance.TemplateUID;
+            if (TemplateRegistry.TryGetTemplate(templateID, out var template))
+            {
+                Debug.Log($"{templateID}");
+                foreach (var constraintTemplate in template.Container.GetComponentsInChildren<ConstraintTemplate>(true))
+                {
+                    foreach (var loadedTemplate in instance.Handler.LoadedTemplates.Values)
+                    {
+                        RegisterConstraints(loadedTemplate.transform, template.Container.transform, constraintTemplate);
+                    }
+                }
+            }
+            /*
             foreach (var loadedTemplate in instance.Handler.LoadedTemplates)
             {
                 var split = loadedTemplate.Key.Split(':');
@@ -73,15 +88,15 @@ namespace UCustomPrefabsAPI.Peak
                         RegisterConstraints(loadedTemplate.Value.transform, currentTemplate.transform, constraintTemplate);
                     }
                 }
-            }
+            }*/
             //Dirty Hack To Manage Reset Order
-            if (!Shared_Constraints.TryGetValue(instance.Handler.transform, out var active))
+            /*if (!Shared_Constraints.TryGetValue(instance.Handler.transform, out var active))
             {
                 active = new Stack<Peak_Constraints>();
                 Shared_Constraints[instance.Handler.transform] = active;
                 IsPrimaryConstraint = true;
             }
-            active.Push(this);
+            active.Push(this);*/
             //
             var isCurrentlyChicken = instance.CharacterCustomization.isCannibalizable;
             if (isCurrentlyChicken)
@@ -133,10 +148,13 @@ namespace UCustomPrefabsAPI.Peak
                 return;
             }
             var refPath = SearchUtils.FindPath(refTemplate, constraintTemplate.TargetObject);
+            //TODO re-write constraint pathing//
+            refPath = refPath.Substring(refPath.IndexOf('/')+1);
             var root = loadedTemplate.Find(refPath);//SearchUtils.IterativelyFindChild(loadedTemplate, refPath);
             if (!root)
             {
                 Debug.LogWarning("Invalid Template Root, Unable to build constraints.");
+                Debug.LogWarning(refPath);
                 return;
             }
             var bakedConstraint = new BakedConstraintTemplate(constraintTemplate, target, root);

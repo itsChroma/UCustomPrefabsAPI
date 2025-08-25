@@ -23,6 +23,14 @@ namespace UCustomPrefabsAPI.Peak.CustomActions
             module.instance = this;
             _modules[module_type] = module;
         }
+        public void RegisterModule(Peak_Module module)
+        {
+            var type = module.GetType();
+            if (_modules.ContainsKey(type))
+                return;
+            module.instance = this;
+            _modules[type] = module;
+        }
         public bool TryGetModule<T>(out T module) where T : Peak_Module
         {
             var success = _modules.TryGetValue(typeof(T), out var foundModule);

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UCustomPrefabsAPI.Peak.Patches.Listeners;
+using UnityEngine;
 
 namespace UCustomPrefabsAPI.Peak
 {
@@ -38,9 +39,20 @@ namespace UCustomPrefabsAPI.Peak
                 foreach (var target in swapper.ToggleTargetTypes)
                 {
                     if (instance.Is_PeakAccessoryTarget_Active(target))
+                    {
                         swapper.Set_CurrentTarget(target);
+#if DEBUG
+                        Debug.Log($"Has Accessory : {target.hint}");
+#endif
+                        break;
+                    }
                     else
+                    {
                         swapper.Set_Texture(null);
+#if DEBUG
+                        Debug.Log($"Does Not Have Accessory : {target.hint}");
+#endif
+                    }
                 }
             }
         }

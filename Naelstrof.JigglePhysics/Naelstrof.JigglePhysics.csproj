@@ -16,12 +16,6 @@
     <RootNamespace>$(AssemblyName)</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="external\**\*.meta" />
-    <EmbeddedResource Remove="external\**\*.meta" />
-    <None Remove="external\**\*.meta" />
-    <Compile Include="Naelstrof.JigglePhysics\external\Scripts\*.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all" />
@@ -31,6 +25,13 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" IncludeAssets="compile" />
     <PackageReference Include="UnityEngine.Modules" Version="6000.0.*" IncludeAssets="compile" />
     <PackageReference Include="HarmonyX" Version="2.9.0" IncludeAssets="compile" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="external\**\*.meta" />
+    <EmbeddedResource Remove="external\**\*.meta" />
+    <None Remove="external\**\*.meta" />
+    <Compile Include="Naelstrof.JigglePhysics\external\Scripts\*.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789`))' == 'net'">

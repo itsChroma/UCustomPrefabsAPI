@@ -31,13 +31,18 @@ namespace UCustomPrefabsAPI
         }
         public void Reset()
         {
-            if (Target == null)
+            if (Target == null || Target.gameObject == null)
                 return;
             if (!DestroyHandler())
             {
                 try
                 {
                     Handler = Target.gameObject.AddComponent<UCustomPrefabHandler>();
+                    if (!Handler)
+                    {
+                        Debug.LogWarning("Handler Unable to be added to GameObject. Ignore.");
+                        return;
+                    }
                     Handler.Instance = this;
                     Handler.Initialize();
                 }

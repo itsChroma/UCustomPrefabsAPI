@@ -8,33 +8,54 @@ namespace UCustomPrefabsAPI.RuntimeExtras
     {
         private static RenderingLayerMask Hidden_Mask = 0;
         Dictionary<Renderer, RenderingLayerMask> _renderers = new();
-        HiderMethod HiderMethod = HiderMethod.Everything;
-        List<string> MeshesHidden = new();
-        bool AlwaysCheck = false;
+        //HiderMethod HiderMethod = HiderMethod.Everything;
+        //List<string> MeshesHidden = new();
+        //TODO Implement Dictionary bool list<string>/renderers, So we can do a hide per frame//
+        //bool AlwaysCheck = false;
         public override void RegisterActions()
         {
             AddOnStateChanged(Init);
             AddOnDestroy(Reset);
         }
-        public override void HandleTemplateData(object[] data)
+        //TODO verify if better to fetch template data//
+        /*public override void HandleTemplateData(object[] data)
         {
             //Convert Template Data Over <--
             HiderMethod = (HiderMethod)data[0];
             MeshesHidden = (List<string>)data[1];
             AlwaysCheck = (bool)data[2];
-        }
+        }*/
         public void Init(string last, string state)
         {
-            RegisterRenderers();
+            RegisterMeshHiderTemplates();
+            //RegisterRenderers();
             HideRenderers();
         }
         public void Reset()
         {
             ResetRenderers();
         }
-        //TODO Ensure we aren't targeting Template Renderers!
-        public void RegisterRenderers()
+        //TODO Verify this works for certain templates that target the same mesh.
+        //There is potentially a issue with renderers having different priorities, and cause meshes to remain hidden
+        //even after a reset()
+        public void RegisterMeshHiderTemplates()
         {
+            var templateID = Handler.Instance.TemplateUID;
+            //Somehow our template is invalid?!
+            if (!TemplateRegistry.TryGetTemplate(templateID, out var template))
+                return;
+            //Allows us to stack MeshHider Template data for weird setups.
+            foreach (var cat in template.CustomActionsTemplates)
+            {
+                if (cat is MeshHider_Template hider)
+                    RegisterRenderers(hider);
+            }
+        }
+        //TODO Ensure we aren't targeting Template Renderers!
+        public void RegisterRenderers(MeshHider_Template template)
+        {
+            var HiderMethod = template.ParsedHiderMethod;
+            var MeshesHidden = template.MeshesHidden;
             switch (HiderMethod)
             {
                 case HiderMethod.Directory:
@@ -61,10 +82,8 @@ namespace UCustomPrefabsAPI.RuntimeExtras
                             if (!children.TryGetValue(name, out Transform child))
                                 continue;
                             var renderer = child.GetComponent<Renderer>();
-                            if (!renderer)
-                                continue;
-                            //Add it in...
-                            _renderers[renderer] = renderer.renderingLayerMask;
+                            if (renderer)
+                                _renderers[renderer] = renderer.renderingLayerMask;
                         }
                     }
                     break;
@@ -75,11 +94,11 @@ namespace UCustomPrefabsAPI.RuntimeExtras
                             var transform = Handler.transform.Find(path);
                             if (!transform)
                                 continue;
-                            var renderers = transform.GetComponents<Renderer>();
+                            var renderers = transform.GetComponentsInChildren<Renderer>(true);
                             foreach (var renderer in renderers)
                             {
-                                //Add it in...
-                                _renderers[renderer] = renderer.renderingLayerMask;
+                                if (renderer.transform != transform)
+                                    _renderers[renderer] = renderer.renderingLayerMask;
                             }
                         }
                     }
@@ -92,11 +111,11 @@ namespace UCustomPrefabsAPI.RuntimeExtras
                         {
                             if (!children.TryGetValue(name, out Transform child))
                                 continue;
-                            var renderers = child.GetComponents<Renderer>();
+                            var renderers = child.GetComponentsInChildren<Renderer>(true);
                             foreach (var renderer in renderers)
                             {
-                                //Add it in...
-                                _renderers[renderer] = renderer.renderingLayerMask;
+                                if (renderer.transform != child)
+                                    _renderers[renderer] = renderer.renderingLayerMask;
                             }
                         }
                     }
@@ -141,12 +160,14 @@ namespace UCustomPrefabsAPI.RuntimeExtras
             _InvalidKeys.Push(renderer);
             return false;
         }
+        //TODO Fix how masking works?
         public void HideRenderers()
         {
             foreach (var pair in _renderers)
             {
                 if (ValidateRenderer(pair.Key))
-                    pair.Key.renderingLayerMask = Hidden_Mask;
+                    pair.Key.forceRenderingOff = true;
+                //pair.Key.renderingLayerMask = Hidden_Mask;
             }
             DoPostValidation();
         }
@@ -155,7 +176,8 @@ namespace UCustomPrefabsAPI.RuntimeExtras
             foreach (var pair in _renderers)
             {
                 if (ValidateRenderer(pair.Key))
-                    pair.Key.renderingLayerMask = pair.Value;
+                    pair.Key.forceRenderingOff = false;
+                //pair.Key.renderingLayerMask = pair.Value;
             }
             DoPostValidation();
             _renderers.Clear();

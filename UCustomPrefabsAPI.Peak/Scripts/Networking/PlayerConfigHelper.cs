@@ -37,6 +37,8 @@ namespace UCustomPrefabsAPI.PhotonUtils.Networking
         }
         public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps)
         {
+            if (targetPlayer != photonView.Owner)
+                return;
             object data;
             //var props = changedProps;// <- For individual changes
             // TODO Fix MeshHider issues, Old Method vvv
@@ -45,6 +47,11 @@ namespace UCustomPrefabsAPI.PhotonUtils.Networking
             // Either fix those order issues, Or create a per-character helper script that correctly
             // tracks which meshes are hidden despite of which order are loaded in.
             // *For now, we'll just update everything.
+
+            PurgeInstance(ChickenHandler);
+            PurgeInstance(PassportDummy_Handler);
+            PurgeInstance(CharacterHandler);
+
             var props = targetPlayer.CustomProperties; //Everything Always happens//
             if (props.TryGetValue(CharacterTag, out data))
                 if (data is string token)
@@ -55,6 +62,9 @@ namespace UCustomPrefabsAPI.PhotonUtils.Networking
             if (props.TryGetValue(ChickenTag, out data))
                 if (data is string token)
                     UpdateChickenTemplate(targetPlayer, token);
+
+            //Not Sure If Neccessary to update our Passport//
+            PassportManager.instance?.SetActiveButton();
         }
         public string CurrentCharacterTemplate
         {
@@ -196,7 +206,9 @@ namespace UCustomPrefabsAPI.PhotonUtils.Networking
         }
         public void Start()
         {
-            UpdatePlayerData();
+            if (photonView.IsMine)
+                UpdatePlayerData();
+            OnPlayerPropertiesUpdate(photonView.Owner, photonView.Owner.CustomProperties);
         }
         public void Update()
         {

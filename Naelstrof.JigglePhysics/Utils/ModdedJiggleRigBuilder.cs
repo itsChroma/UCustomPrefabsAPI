@@ -1,5 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+#if UNITY_EDITOR
+using System.Reflection;
+#endif
 namespace JigglePhysics.Modding
 {
     public class ModdedJiggleRigBuilder : JiggleRigBuilder
@@ -13,10 +16,6 @@ namespace JigglePhysics.Modding
         [SerializeField, HideInInspector] private List<int> _ignored_count = new();
         [SerializeField, HideInInspector] private List<Collider> _colliders = new();
         [SerializeField, HideInInspector] private List<int> _colliders_count = new();
-        //Reflection, Should change accessibility of certain variables instead.
-        //Only Required In Editor
-        //private static FieldInfo _JiggleRig_ignoredTransforms = typeof(JiggleRig).GetField("ignoredTransforms", BindingFlags.NonPublic | BindingFlags.Instance);
-        //private static FieldInfo _JiggleRig_colliders = typeof(JiggleRig).GetField("colliders", BindingFlags.NonPublic | BindingFlags.Instance);
         public void ResetData()
         {
             _count = 0;
@@ -28,6 +27,10 @@ namespace JigglePhysics.Modding
             _colliders.Clear();
             _colliders_count.Clear();
         }
+        //We Only Really Need To Build Our Rig Data At Runtime!//
+#if UNITY_EDITOR
+        private static FieldInfo _JiggleRig_ignoredTransforms = typeof(JiggleRig).GetField("ignoredTransforms", BindingFlags.NonPublic | BindingFlags.Instance);
+        private static FieldInfo _JiggleRig_colliders = typeof(JiggleRig).GetField("colliders", BindingFlags.NonPublic | BindingFlags.Instance);
         public void UpdateJiggleRigData(bool clearJiggleRigsData = false)
         {
             //Reset our stored Data//
@@ -39,17 +42,29 @@ namespace JigglePhysics.Modding
                 _animated.Add(rig.animated);
                 _settings.Add(rig.jiggleSettings);
                 _root.Add(rig.GetRootTransform());
-                foreach (var transform in rig.ignoredTransforms)
-                    _ignored.Add(transform);
-                _ignored_count.Add(rig.ignoredTransforms.Count);
-                foreach (var collider in rig.colliders)
-                    _colliders.Add(collider);
-                _colliders_count.Add(rig.colliders.Length);
+                //Accessing Editor Values Directly... Weird!
+                if (_JiggleRig_ignoredTransforms?.GetValue(rig) is List<Transform> ignoredList)
+                {
+                    foreach (var transform in ignoredList)
+                        _ignored.Add(transform);
+                    _ignored_count.Add(ignoredList.Count);
+                }
+                if (_JiggleRig_colliders?.GetValue(rig) is Collider[] colliderList)
+                {
+                    foreach (var collider in colliderList)
+                        _colliders.Add(collider);
+                    _colliders_count.Add(colliderList.Length);
+                }
             }
             //Just for cleanup...!
             if (clearJiggleRigsData)
                 jiggleRigs.Clear();
         }
+        public void OnValidate()
+        {
+            UpdateJiggleRigData();
+        }
+#endif
         public void ApplyJiggleRigData(bool clearStoredData = true)
         {
             if (_count == 0)

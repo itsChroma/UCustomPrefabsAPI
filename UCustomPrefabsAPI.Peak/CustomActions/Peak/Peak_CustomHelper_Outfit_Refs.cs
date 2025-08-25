@@ -145,9 +145,9 @@ namespace UCustomPrefabsAPI.Peak.CustomActions
                     break;
             }
 #if DEBUG
-            Debug.Log($"Check = {accessoryTarget.hint} : {currentOption?.GetName()}");
+            //Debug.Log($"Check = {accessoryTarget.hint} : {currentOption?.GetName()}");
             var valid = string.Equals(accessoryTarget.hint, currentOption?.GetName(), System.StringComparison.OrdinalIgnoreCase);
-            Debug.Log($"{valid}");
+            //Debug.Log($"{valid}");
 #endif
             return valid;
         }
@@ -301,6 +301,7 @@ namespace UCustomPrefabsAPI.Peak.CustomActions
                     Show_Customization_Renderer(renderer);
                 }
         }
+        //TODO fix this : Possibly move to own module...? or variable on CustomHelper instance
         public void Hide_Customization_Renderer(Renderer renderer)
         {
             if (_customization_renderers.ContainsKey(renderer))
