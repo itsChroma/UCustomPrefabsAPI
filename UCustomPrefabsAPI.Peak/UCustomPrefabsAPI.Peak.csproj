@@ -76,7 +76,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Naelstrof.JigglePhysics\Naelstrof.JigglePhysics.csproj" Publicize="true" />
+    <ProjectReference Include="..\Naelstrof.JigglePhysics\Naelstrof.JigglePhysics.csproj"/>
     <ProjectReference Include="..\PixelTools\PixelTools.csproj" />
     <ProjectReference Include="..\UCustomPrefabsAPI\UCustomPrefabsAPI.csproj" />
   </ItemGroup>

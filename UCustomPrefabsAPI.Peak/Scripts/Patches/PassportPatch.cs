@@ -98,6 +98,10 @@ namespace UCustomPrefabsAPI.Peak
         {
             PassportHelper.SwitchToCustomTab(type);
             __instance.activeType = type;
+            //For Testing Accessories, TEMP//
+#if DEBUG
+            __instance.testUnlockAll = true;
+#endif
             if (!PassportHelper.IsSpecialCustomization(__instance.activeType, out var templateType))
                 return true;
             //Vanilla Behaviour

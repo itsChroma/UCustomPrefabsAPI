@@ -19,7 +19,7 @@ namespace UCustomPrefabsAPI.Peak
         public const string WEBSITE = "https://github.com/ScottyFox/UCustomPrefabsAPI/tree/peak";
     }
     [BepInPlugin(PluginInfo.GUID, PluginInfo.NAME, PluginInfo.VERSION)]
-    [BepInDependency("Naelstrof.JigglePhysics",BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("Naelstrof.JigglePhysics", BepInDependency.DependencyFlags.SoftDependency)]
     public class Plugin : BaseUnityPlugin
     {
         public static ConfigFile config;

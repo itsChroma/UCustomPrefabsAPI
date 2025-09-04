@@ -119,12 +119,19 @@ namespace UCustomPrefabsAPI
         /// </summary>
         public static void Remove(string uid)
         {
-            if (string.IsNullOrWhiteSpace(uid))
-                return;
-            if (Instances.TryGetValue(uid, out var instance))
+
+            try
             {
-                instance?.PrepareRemove();
-                Instances.Remove(uid);
+                if (string.IsNullOrWhiteSpace(uid))
+                    return;
+                if (Instances.TryGetValue(uid, out var instance))
+                {
+                    instance?.PrepareRemove();
+                    Instances.Remove(uid);
+                }
+            }
+            catch {
+                Debug.LogWarning($"Unable to remove Instance ID : \"{uid}\" Ignoring.");
             }
         }
         /// <summary>

@@ -163,7 +163,8 @@ namespace UCustomPrefabsAPI.PhotonUtils.Networking
             //Verify if we need to use a template//
             if (CustomTemplateUtils.IsSpecialTemplate(templateID))
                 return;
-            var TemplateUID = $"{SkeletonTag}:{photonView.OwnerActorNr}:{templateID}";
+            //Add the instanceID of the skeleton, since only one of each instance ID can exist//
+            var TemplateUID = $"{SkeletonTag}:{photonView.OwnerActorNr}:{templateID}:{skeleton.GetInstanceID()}";
             InstanceManager.Register(TemplateUID, templateID, skeleton.transform);
         }
         private void UpdateChickenTemplate(Photon.Realtime.Player targetPlayer, string token)
@@ -181,9 +182,9 @@ namespace UCustomPrefabsAPI.PhotonUtils.Networking
         }
         public static void PurgeInstance(UCustomPrefabHandler handler)
         {
-            if (!handler)
+            if (handler == null || !handler || handler.Instance == null)
                 return;
-            InstanceManager.Remove(handler.Instance.ID);
+                InstanceManager.Remove(handler.Instance.ID);
         }
         public static bool RegisterInstance(string uid, string template_uid, Transform target, out UCustomPrefabHandler handler)
         {

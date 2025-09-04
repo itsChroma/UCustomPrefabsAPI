@@ -145,10 +145,9 @@ namespace UCustomPrefabsAPI.Peak.CustomActions
                     break;
             }
 #if DEBUG
-            //Debug.Log($"Check = {accessoryTarget.hint} : {currentOption?.GetName()}");
-            var valid = string.Equals(accessoryTarget.hint, currentOption?.GetName(), System.StringComparison.OrdinalIgnoreCase);
-            //Debug.Log($"{valid}");
+            //Debug.Log($"Check = {accessoryTarget.hint} =?= {currentOption?.GetName()}");
 #endif
+            var valid = string.Equals(accessoryTarget.hint, currentOption?.GetName(), System.StringComparison.OrdinalIgnoreCase);
             return valid;
         }
         public Material Fetch_PeakAccessoryType_Material(PeakAccessoryType type)

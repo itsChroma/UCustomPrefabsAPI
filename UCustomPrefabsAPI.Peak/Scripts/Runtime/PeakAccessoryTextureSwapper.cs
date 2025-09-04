@@ -46,7 +46,18 @@ namespace UCustomPrefabsAPI.Peak
             var renderer = GetComponent<Renderer>();
             var materials = renderer.sharedMaterials;
             foreach (var index in TargetMaterials)
-                DefaultTextures.Add(materials[index].GetTexture(TargetTexture));
+            {
+                try
+                {
+                    DefaultTextures.Add(materials[index].GetTexture(TargetTexture));
+                }
+                catch
+                {
+#if DEBUG
+                    Debug.LogWarning($"Incorrect TargetMaterials in {gameObject.name}");
+#endif
+                }
+            }
         }
         public void Set_Texture(Texture texture)
         {
@@ -59,14 +70,32 @@ namespace UCustomPrefabsAPI.Peak
             {
                 for (int i = 0; i < TargetMaterials.Count; i++)
                 {
-                    materials[TargetMaterials[i]].SetTexture(TargetTexture, DefaultTextures[i]);
+                    try
+                    {
+                        materials[TargetMaterials[i]].SetTexture(TargetTexture, DefaultTextures[i]);
+                    }
+                    catch
+                    {
+#if DEBUG
+                        Debug.LogWarning($"Incorrect TargetMaterials in {gameObject.name}");
+#endif
+                    }
                 }
             }
             else
             {
                 foreach (var index in TargetMaterials)
                 {
-                    materials[index].SetTexture(TargetTexture, texture);
+                    try
+                    {
+                        materials[index].SetTexture(TargetTexture, texture);
+                    }
+                    catch
+                    {
+#if DEBUG
+                        Debug.LogWarning($"Incorrect TargetMaterials in {gameObject.name}");
+#endif
+                    }
                 }
             }
             //may not be required
