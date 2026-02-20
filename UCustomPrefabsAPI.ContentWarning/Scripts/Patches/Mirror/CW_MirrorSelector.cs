@@ -29,6 +29,7 @@ namespace UCustomPrefabsAPI.ContentWarning.Patches.Mirror
                 return;
             }
             Display = display.GetComponent<TextMeshPro>();
+            Display.font.material = Display.fontMaterial;
             LeftArrow = left.gameObject.AddComponent<CW_MirrorSelector_Arrow>();
             RightArrow = right.gameObject.AddComponent<CW_MirrorSelector_Arrow>();
             LeftArrow.gameObject.layer = LayerMask.NameToLayer("Interactable");
