@@ -25,6 +25,7 @@ namespace UCustomPrefabsAPI.ContentWarning.CustomActions
             foreach (var tagged in Handler.GetTagsInTemplates("UseVisorText"))
             {
                 var target = tagged.GetComponent<TextMeshPro>();
+                target.font.material = target.fontMaterial;
                 if (!target)
                     continue;
                 FixTextOffsets(target);
